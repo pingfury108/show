@@ -1,0 +1,135 @@
+---
+// src/components/DonationModal.astro
+interface Props {
+  onClose: () => void;
+  donation: any;
+}
+
+const { onClose, donation } = Astro.props;
+---
+
+<div class="modal-overlay" onClick={onClose}>
+  <div class="modal-content" onClick={(e) => e.stopPropagation()}>
+    <button class="close-btn" onClick={onClose} aria-label="关闭">×</button>
+    <h2>赞赏支持</h2>
+    {donation?.description && <p class="donation-desc">{donation.description}</p>}
+    
+    <div class="qrcode-container">
+      {donation?.wechat && (
+        <div class="qrcode-item">
+          <h3>微信</h3>
+          <img src={donation.wechat} alt="微信赞赏码" class="qrcode-img" />
+        </div>
+      )}
+      {donation?.alipay && (
+        <div class="qrcode-item">
+          <h3>支付宝</h3>
+          <img src={donation.alipay} alt="支付宝赞赏码" class="qrcode-img" />
+        </div>
+      )}
+      {donation?.paypal && (
+        <div class="qrcode-item">
+          <h3>PayPal</h3>
+          <a href={donation.paypal} target="_blank" rel="noopener noreferrer" class="paypal-link">
+            点击赞赏
+          </a>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  }
+  
+  .modal-content {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    position: relative;
+    text-align: center;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .close-btn:hover {
+    color: #000;
+  }
+  
+  .donation-desc {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #6c757d;
+  }
+  
+  .qrcode-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .qrcode-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+  }
+  
+  .qrcode-img {
+    max-width: 180px;
+    max-height: 180px;
+    width: auto;
+    height: auto;
+    border: 1px solid #e9ecef;
+    border-radius: var(--border-radius);
+  }
+  
+  .qrcode-item h3 {
+    margin-bottom: 1rem;
+    color: var(--color-accent);
+  }
+  
+  .paypal-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-accent);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+  }
+  
+  .paypal-link:hover {
+    background-color: #3a5a80;
+  }
+</style>

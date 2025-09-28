@@ -1,0 +1,24 @@
+{
+  "name": "张三",
+  "bio": "一名全栈开发工程师，专注于现代 Web 技术",
+  "role": "Senior Frontend Developer",
+  "avatar": "/avatars/profile.jpg",
+  "social": {
+    "github": "https://github.com/username",
+    "linkedin": "https://linkedin.com/in/username",
+    "email": "name@example.com"
+  },
+  "skills": [
+    "JavaScript",
+    "TypeScript", 
+    "React",
+    "Node.js",
+    "Python",
+    "Astro"
+  ],
+  "donation": {
+    "wechat": "/images/wechat-qrcode.png",
+    "alipay": "/images/alipay-qrcode.png",
+    "description": "如果你觉得我的项目对你有帮助，欢迎赞赏支持！"
+  }
+}

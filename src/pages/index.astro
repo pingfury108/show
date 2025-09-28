@@ -1,0 +1,409 @@
+---
+// src/pages/index.astro
+import MinimalLayout from '../layouts/MinimalLayout.astro';
+import { getCollection } from 'astro:content';
+
+// 获取所有数据
+const projects = (await getCollection('projects'));
+const personalInfo = await import('../content/personal/info.json').then(m => m.default);
+---
+
+<MinimalLayout 
+  title={`${personalInfo.name} - ${personalInfo.role}`} 
+  description={personalInfo.bio}
+>
+  <div class="container">
+    <!-- 个人介绍区 -->
+    <section id="about" class="about-section">
+      <div class="profile-container">
+        <img 
+          src={personalInfo.avatar} 
+          alt={personalInfo.name} 
+          class="profile-image" 
+        />
+        <div class="profile-text">
+          <h1>{personalInfo.name}</h1>
+          <h2>{personalInfo.role}</h2>
+          <p>{personalInfo.bio}</p>
+          <div class="social-links">
+            {personalInfo.social.github && (
+              <a 
+                href={personalInfo.social.github} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="social-link"
+              >
+                GitHub
+              </a>
+            )}
+            {personalInfo.social.linkedin && (
+              <a 
+                href={personalInfo.social.linkedin} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="social-link"
+              >
+                LinkedIn
+              </a>
+            )}
+            {personalInfo.social.email && (
+              <a 
+                href={`mailto:${personalInfo.social.email}`} 
+                class="social-link"
+              >
+                Email
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 技能区 -->
+    <section id="skills" class="skills-section">
+      <h2>技能</h2>
+      <div class="skills-container">
+        {personalInfo.skills.map((skill: string) => (
+          <span class="skill-tag" key={skill}>{skill}</span>
+        ))}
+      </div>
+    </section>
+
+    <!-- 项目区 -->
+    <section id="projects" class="projects-section">
+      <h2>项目</h2>
+      <div class="projects-grid">
+        {projects.map((project) => (
+          <div class="project-card" key={project.id}>
+            {project.data.image && (
+              <img 
+                src={project.data.image} 
+                alt={project.data.title} 
+                class="project-image"
+              />
+            )}
+            <h3>{project.data.title}</h3>
+            <p>{project.data.description}</p>
+            <div class="project-tech">
+              {project.data.tech.map((tech: string) => (
+                <span class="tech-tag" key={tech}>{tech}</span>
+              ))}
+            </div>
+            <div class="project-links">
+              {project.data.githubUrl && (
+                <a 
+                  href={project.data.githubUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="project-link"
+                >
+                  GitHub
+                </a>
+              )}
+              {project.data.demoUrl && (
+                <a 
+                  href={project.data.demoUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="project-link"
+                >
+                  Demo
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 赞赏区 -->
+    {personalInfo.donation && (
+      <section id="donation" class="donation-section">
+        <h2>赞赏支持</h2>
+        {personalInfo.donation.description && (
+          <p class="donation-desc">{personalInfo.donation.description}</p>
+        )}
+        <div class="qrcode-container">
+          {personalInfo.donation.wechat && (
+            <div class="qrcode-item">
+              <h3>微信</h3>
+              <img 
+                src={personalInfo.donation.wechat} 
+                alt="微信赞赏码" 
+                class="qrcode-img" 
+              />
+            </div>
+          )}
+          {personalInfo.donation.alipay && (
+            <div class="qrcode-item">
+              <h3>支付宝</h3>
+              <img 
+                src={personalInfo.donation.alipay} 
+                alt="支付宝赞赏码" 
+                class="qrcode-img" 
+              />
+            </div>
+          )}
+          {personalInfo.donation.paypal && (
+            <div class="qrcode-item">
+              <h3>PayPal</h3>
+              <a 
+                href={personalInfo.donation.paypal} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="paypal-link"
+              >
+                点击赞赏
+              </a>
+            </div>
+          )}
+        </div>
+      </section>
+    )}
+  </div>
+</MinimalLayout>
+
+<style>
+  .about-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 3rem;
+  }
+  
+  .profile-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-border);
+  }
+  
+  .profile-text h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .profile-text h2 {
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+    font-weight: normal;
+  }
+  
+  .social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .social-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-accent);
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+  }
+  
+  .social-link:hover {
+    background-color: var(--color-accent);
+    color: white;
+  }
+  
+  .skills-section {
+    text-align: center;
+  }
+  
+  .skills-section h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+  
+  .skill-tag {
+    background-color: #f1f3f9;
+    color: var(--color-accent);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .projects-section {
+    padding-bottom: 2rem;
+  }
+  
+  .projects-section h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .project-card {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  }
+  
+  .project-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+  }
+  
+  .project-card h3 {
+    margin-top: 0;
+    color: var(--color-accent);
+  }
+  
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  
+  .tech-tag {
+    background-color: #f8f9fa;
+    color: #495057;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+  }
+  
+  .project-links {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .project-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease;
+  }
+  
+  .project-link:hover {
+    border-bottom-color: var(--color-accent);
+  }
+  
+  .donation-section {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+    border-top: 1px solid var(--color-border);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .donation-section h2 {
+    margin-bottom: 1rem;
+  }
+  
+  .donation-desc {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    color: #6c757d;
+  }
+  
+  .qrcode-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .qrcode-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+  }
+  
+  .qrcode-img {
+    max-width: 180px;
+    max-height: 180px;
+    width: auto;
+    height: auto;
+    border: 1px solid #e9ecef;
+    border-radius: var(--border-radius);
+  }
+  
+  .qrcode-item h3 {
+    margin-bottom: 1rem;
+    color: var(--color-accent);
+  }
+  
+  .paypal-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-accent);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+  }
+  
+  .paypal-link:hover {
+    background-color: #3a5a80;
+  }
+  
+  @media (max-width: 768px) {
+    .about-section {
+      padding-top: 2rem;
+    }
+    
+    .profile-text h1 {
+      font-size: 2rem;
+    }
+    
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .qrcode-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .qrcode-item {
+      margin-bottom: 2rem;
+    }
+    
+    section {
+      padding: var(--spacing-lg) 0;
+    }
+  }
+</style>
