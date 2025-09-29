@@ -25,7 +25,8 @@ const personalInfoCollection = defineCollection({
     social: z.object({
       github: z.string().optional(),
       twitter: z.string().optional(),
-      linkedin: z.string().optional(),
+      wechat: z.string().optional(), // WeChat ID
+      x: z.string().optional(), // X (Twitter) profile
       email: z.string().email().optional(),
       website: z.string().url().optional()
     }),

@@ -1,20 +1,20 @@
 {
-  "name": "张三",
+  "name": "很发狂",
   "bio": "一名全栈开发工程师，专注于现代 Web 技术",
-  "role": "Senior Frontend Developer",
+  "role": "Full-stack Developer",
   "avatar": "/avatars/profile.jpg",
   "social": {
-    "github": "https://github.com/username",
-    "linkedin": "https://linkedin.com/in/username",
-    "email": "name@example.com"
+    "github": "https://github.com/pingfury108",
+    "x": "https://x.com/pfy108",
+    "wechat": "qzz18580256051",
+    "email": "pingfury@outlook.com"
   },
   "skills": [
-    "JavaScript",
-    "TypeScript", 
-    "React",
-    "Node.js",
+    "Golang",
     "Python",
-    "Astro"
+    "Rust",
+    "React",
+    "Emacs"
   ],
   "donation": {
     "wechat": "/images/wechat-qrcode.png",

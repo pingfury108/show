@@ -36,15 +36,35 @@ const personalInfo = await import('../content/personal/info.json').then(m => m.d
                 GitHub
               </a>
             )}
-            {personalInfo.social.linkedin && (
+            {personalInfo.social.twitter && (
               <a 
-                href={personalInfo.social.linkedin} 
+                href={personalInfo.social.twitter} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 class="social-link"
               >
-                LinkedIn
+                Twitter
               </a>
+            )}
+            {personalInfo.social.x && (
+              <a 
+                href={personalInfo.social.x} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="social-link"
+              >
+                X
+              </a>
+            )}
+            {personalInfo.social.wechat && (
+              <button
+                type="button"
+                class="social-link"
+                data-wechat-id={personalInfo.social.wechat}
+                id="wechat-social-btn"
+              >
+                微信
+              </button>
             )}
             {personalInfo.social.email && (
               <a 
@@ -113,6 +133,54 @@ const personalInfo = await import('../content/personal/info.json').then(m => m.d
             </div>
           </div>
         ))}
+      </div>
+    </section>
+
+    <!-- 承接项目区 -->
+    <section id="hiring" class="hiring-section">
+      <div class="hiring-container">
+        <h2>承接项目</h2>
+        <p class="hiring-desc">我正在承接各类 Web 开发项目，包括但不限于：</p>
+        <ul class="hiring-list">
+          <li>前端开发（React, Vue, Astro）</li>
+          <li>全栈应用开发（Go, Python, Rust）</li>
+          <li>浏览器插件开发</li>
+          <li>AI 集成项目</li>
+          <li>桌面应用开发</li>
+          <li>服务器维护（Linux, Docker, K8s）</li>
+          <li>数据库维护</li>
+        </ul>
+        <p class="hiring-contact">如需咨询或报价，请通过以下方式联系我：</p>
+        <div class="contact-links">
+          {personalInfo.social.email && (
+            <a 
+              href={`mailto:${personalInfo.social.email}`} 
+              class="contact-link"
+            >
+              邮箱联系
+            </a>
+          )}
+          {personalInfo.social.x && (
+            <a 
+              href={personalInfo.social.x} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="contact-link"
+            >
+              X 联系
+            </a>
+          )}
+          {personalInfo.social.wechat && (
+            <button
+              type="button"
+              class="contact-link"
+              data-wechat-id={personalInfo.social.wechat}
+              id="wechat-contact-btn"
+            >
+              微信联系
+            </button>
+          )}
+        </div>
       </div>
     </section>
 
@@ -327,6 +395,61 @@ const personalInfo = await import('../content/personal/info.json').then(m => m.d
     margin: 0 auto;
   }
   
+  .hiring-section {
+    text-align: center;
+    padding: var(--spacing-xl) 0;
+    border-top: 1px solid var(--color-border);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .hiring-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .hiring-desc {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .hiring-list {
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto 1.5rem;
+    padding-left: 1.5rem;
+  }
+  
+  .hiring-list li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+  
+  .hiring-contact {
+    margin-bottom: 1.5rem;
+  }
+  
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .contact-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-accent);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    transition: background-color 0.3s ease;
+  }
+  
+  .contact-link:hover {
+    background-color: #3a5a80;
+  }
+  
   .donation-section h2 {
     margin-bottom: 1rem;
   }
@@ -407,3 +530,113 @@ const personalInfo = await import('../content/personal/info.json').then(m => m.d
     }
   }
 </style>
+
+<script>
+  function showWechatId(wechatId) {
+    // 创建模态框元素
+    const modal = document.createElement('div');
+    modal.id = 'wechat-modal';
+    
+    // 设置模态框样式
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+    modal.style.zIndex = '10000';
+    
+    // 创建内容区域
+    const content = document.createElement('div');
+    content.style.background = 'white';
+    content.style.padding = '2rem';
+    content.style.borderRadius = '8px';
+    content.style.textAlign = 'center';
+    content.style.maxWidth = '90%';
+    content.style.position = 'relative';
+    
+    // 创建关闭按钮
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '×';
+    closeBtn.style.position = 'absolute';
+    closeBtn.style.top = '1rem';
+    closeBtn.style.right = '1rem';
+    closeBtn.style.background = 'none';
+    closeBtn.style.border = 'none';
+    closeBtn.style.fontSize = '1.5rem';
+    closeBtn.style.cursor = 'pointer';
+    closeBtn.style.color = '#666';
+    
+    // 创建标题和内容
+    const title = document.createElement('h3');
+    title.textContent = '微信账号';
+    title.style.marginBottom = '1rem';
+    
+    const wechatDisplay = document.createElement('p');
+    wechatDisplay.textContent = wechatId;
+    wechatDisplay.style.fontSize = '1.2rem';
+    wechatDisplay.style.fontWeight = 'bold';
+    wechatDisplay.style.margin = '1rem 0';
+    
+    const instruction = document.createElement('p');
+    instruction.textContent = '请复制上方微信账号并添加好友';
+    
+    // 组装内容
+    closeBtn.addEventListener('click', closeWechatModal);
+    content.appendChild(closeBtn);
+    content.appendChild(title);
+    content.appendChild(wechatDisplay);
+    content.appendChild(instruction);
+    
+    // 组装模态框
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // 点击模态框背景关闭
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeWechatModal();
+      }
+    });
+  }
+  
+  function closeWechatModal() {
+    const modal = document.getElementById('wechat-modal');
+    if (modal) {
+      document.body.removeChild(modal);
+    }
+  }
+  
+  // ESC键关闭模态框
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('wechat-modal');
+      if (modal) {
+        closeWechatModal();
+      }
+    }
+  });
+  
+  // 为微信按钮添加点击事件
+  document.addEventListener('DOMContentLoaded', function() {
+    const wechatSocialBtn = document.getElementById('wechat-social-btn');
+    const wechatContactBtn = document.getElementById('wechat-contact-btn');
+    
+    if (wechatSocialBtn) {
+      wechatSocialBtn.addEventListener('click', function() {
+        const wechatId = this.getAttribute('data-wechat-id');
+        showWechatId(wechatId);
+      });
+    }
+    
+    if (wechatContactBtn) {
+      wechatContactBtn.addEventListener('click', function() {
+        const wechatId = this.getAttribute('data-wechat-id');
+        showWechatId(wechatId);
+      });
+    }
+  });
+</script>
