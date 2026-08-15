@@ -1,642 +1,421 @@
 ---
 // src/pages/index.astro
 import MinimalLayout from '../layouts/MinimalLayout.astro';
-import { getCollection } from 'astro:content';
 
-// 获取所有数据
-const projects = (await getCollection('projects'));
 const personalInfo = await import('../content/personal/info.json').then(m => m.default);
+
+// 卡片通用样式
+const cardCls = 'bg-white border border-slate-200 rounded-[10px] p-7 transition hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(15,23,42,0.08)] hover:border-slate-300';
+// 小标签样式（交付/工期/问题/结果）
+const labelCls = 'not-italic font-bold text-dark bg-slate-50 border border-slate-200 rounded px-1.5 py-0.5 mr-2 text-xs';
+const labelDarkCls = 'not-italic font-bold text-dark bg-accent rounded px-1.5 py-0.5 mr-2 text-xs';
+// 按钮
+const btnPrimary = 'inline-block bg-accent text-dark font-semibold px-9 py-3.5 rounded-[10px] transition hover:bg-accent-light hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(245,158,11,0.3)] cursor-pointer border-none text-base';
+const btnGhost = 'inline-block border border-slate-600 text-slate-200 font-semibold px-9 py-3.5 rounded-[10px] transition hover:border-accent hover:text-accent text-base';
+
+// 我能帮你解决的问题（场景式）
+const problems = [
+  {
+    title: '纸质资料想变成电子题库',
+    desc: '大量试卷、教辅、讲义需要数字化？OCR 识别 + AI 结构化，扫描件直接变成可检索、可编辑的题库系统。',
+  },
+  {
+    title: '想做 AI 批改 / 答疑类应用',
+    desc: '作业批改、错别字检查、自动解题、智能问答……从模型接入到产品上线，全流程交付。',
+  },
+  {
+    title: '重复性工作想自动化',
+    desc: '数据抓取、批量处理、定时监控、消息推送，把每天几小时的手工活交给程序。',
+  },
+  {
+    title: '想要桌面小工具或浏览器插件',
+    desc: 'Windows / macOS 跨平台桌面应用，Chrome / Edge 浏览器扩展，贴合你的实际工作流。',
+  },
+  {
+    title: '想做网站、小程序或管理系统',
+    desc: '企业官网、后台管理、微信小程序 API，快速开发，低成本上线。',
+  },
+  {
+    title: '想给自己的软件加授权和付费',
+    desc: '授权码生成验证、支付接入，一套完整的软件商业化方案。',
+  },
+];
+
+// 服务与参考价格
+const services = [
+  {
+    name: 'AI 应用开发',
+    desc: 'AI 批改、智能问答、内容生成、OCR 识别等 LLM 应用，从接入到上线',
+    deliver: '可运行的系统 + 源码 + 部署文档',
+    price: '¥3,000 起',
+    period: '1-3 周',
+  },
+  {
+    name: '教辅资料数字化',
+    desc: '试卷/教辅 OCR 识别、题目结构化、LaTeX 公式转 Word、题库管理系统',
+    deliver: '数字化系统 + 数据处理',
+    price: '¥2,000 起',
+    period: '按量报价',
+  },
+  {
+    name: '桌面应用开发',
+    desc: 'Windows / macOS 跨平台工具软件，单文件免安装，体验流畅',
+    deliver: '安装包 + 源码',
+    price: '¥1,500 起',
+    period: '1-2 周',
+  },
+  {
+    name: '浏览器插件开发',
+    desc: 'Chrome / Edge 扩展，页面数据提取、自动填表、工作效率增强',
+    deliver: '插件包 + 源码',
+    price: '¥800 起',
+    period: '3-7 天',
+  },
+  {
+    name: '网站 / 小程序开发',
+    desc: '企业官网、管理系统、微信小程序后端 API，全栈一站式交付',
+    deliver: '上线系统 + 源码',
+    price: '¥3,000 起',
+    period: '2-4 周',
+  },
+  {
+    name: '自动化脚本 / 机器人',
+    desc: '数据采集、批量处理、任务监控、钉钉/微信消息通知',
+    deliver: '脚本/程序 + 使用说明',
+    price: '¥500 起',
+    period: '1-3 天',
+  },
+];
+
+// 案例精选（客户视角描述，第一个为主打案例）
+const cases = [
+  {
+    title: '教辅数字化题库系统',
+    problem: '数千页纸质试卷需要整理成可检索的电子题库',
+    result: 'OCR 识别 + AI 结构化 + 题目管理后台，支持图片批量处理与题目检索',
+    tags: ['OCR', 'AI', '题库系统'],
+    featured: true,
+  },
+  {
+    title: 'AI 做题助手浏览器插件',
+    problem: '教育平台老师需要快速生成题目答案和解析',
+    result: '插件内一键生成解题步骤与解析，支持图片题识别、公式渲染',
+    tags: ['浏览器插件', 'AI', 'OCR'],
+    link: 'https://doc-edu.pingfury.top/',
+  },
+  {
+    title: '手写作业 AI 批改工具',
+    problem: '手写作业检查耗时耗力，错别字病句难以逐一批改',
+    result: '手写 OCR + 涂改识别 + 错别字/病句/标点自动批改，错误高亮定位',
+    tags: ['AI 批改', 'OCR', '教育'],
+  },
+  {
+    title: 'AI 对话学习平台',
+    problem: '想让学习资料自动生成对话讲解、测验和播客',
+    result: '上传资料自动生成苏格拉底式对话、测验题和双人播客音频',
+    tags: ['AI', 'TTS', '学习平台'],
+    link: 'https://ask.pingfury.top/',
+  },
+  {
+    title: '印刷物融媒体平台',
+    problem: '出版社想给书籍杂志配上音视频，扫码即听',
+    result: '章节管理 + 媒体托管 + 二维码批量导出，让印刷物"开口说话"',
+    tags: ['融媒体', '出版', '二维码'],
+    link: 'https://qc.pingfury.top/',
+  },
+  {
+    title: '电子书转有声书工具',
+    problem: '想把 EPUB / PDF 电子书快速转成可听的有声书',
+    result: '按章节合成语音，导出 MP3 / M4B 有声书，支持批量处理',
+    tags: ['TTS', '有声书', '批量处理'],
+    link: 'https://b2t.pingfury.top',
+  },
+  {
+    title: '跨平台桌面打字软件',
+    problem: '需要一个高性能、零干扰的打字练习桌面应用',
+    result: 'Rust 开发，120FPS 流畅渲染，支持中英文与代码练习',
+    tags: ['桌面应用', 'Rust', '跨平台'],
+    link: 'https://github.com/pingfury108/keyzen',
+  },
+  {
+    title: '任务监控通知机器人',
+    problem: '需要实时盯着平台任务动态，人工刷页面太累',
+    result: '多任务自动监控，有新任务秒级推送到钉钉，7×24 运行',
+    tags: ['自动化', '监控', '钉钉通知'],
+  },
+];
+
+// 为什么找我
+const whyMe = [
+  { title: '教育行业经验丰富', desc: '深耕教辅数字化多年，OCR、题库、AI 批改全流程都做过，懂业务不踩坑' },
+  { title: '独立全流程交付', desc: '需求分析、开发、部署、维护一个人搞定，沟通零损耗' },
+  { title: '交付即用，运维省钱', desc: '单文件交付 + 轻量数据库，普通云主机即可运行，长期维护成本极低' },
+  { title: '源码全交付', desc: '项目结束源码、文档全部交付，无技术绑定，后续可自由迭代' },
+];
+
+// 合作流程
+const steps = [
+  { title: '需求沟通', desc: '微信或邮箱描述你的需求，免费评估' },
+  { title: '报价排期', desc: '明确功能范围、价格和交付时间' },
+  { title: '开发交付', desc: '开发过程定期同步进度，按期交付验收' },
+  { title: '售后维护', desc: '交付后提供质保期，小问题免费修复' },
+];
 ---
 
-<MinimalLayout 
-  title={`${personalInfo.name} - ${personalInfo.role}`} 
+<MinimalLayout
+  title={`${personalInfo.name} - 全栈开发 · 软件外包`}
   description={personalInfo.bio}
 >
-  <div class="container">
-    <!-- 个人介绍区 -->
-    <section id="about" class="about-section">
-      <div class="profile-container">
-        <img 
-          src={personalInfo.avatar} 
-          alt={personalInfo.name} 
-          class="profile-image" 
-        />
-        <div class="profile-text">
-          <h1>{personalInfo.name}</h1>
-          <h2>{personalInfo.role}</h2>
-          <p>{personalInfo.bio}</p>
-          <div class="social-links">
-            {personalInfo.social.github && (
-              <a 
-                href={personalInfo.social.github} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="social-link"
-              >
-                GitHub
-              </a>
-            )}
-            {personalInfo.social.twitter && (
-              <a 
-                href={personalInfo.social.twitter} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="social-link"
-              >
-                Twitter
-              </a>
-            )}
-            {personalInfo.social.x && (
-              <a 
-                href={personalInfo.social.x} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="social-link"
-              >
-                X
-              </a>
-            )}
-            {personalInfo.social.wechat && (
-              <button
-                type="button"
-                class="social-link"
-                data-wechat-id={personalInfo.social.wechat}
-                id="wechat-social-btn"
-              >
-                微信
-              </button>
-            )}
-            {personalInfo.social.email && (
-              <a 
-                href={`mailto:${personalInfo.social.email}`} 
-                class="social-link"
-              >
-                Email
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- Hero 首屏（深色） -->
+  <section class="hero-glow px-4 py-28 text-center text-slate-100 md:py-36">
+    <p class="mb-8 inline-block rounded-full border border-accent/50 px-5 py-1.5 text-sm tracking-widest text-accent">承接软件开发外包</p>
+    <h1 class="mb-5 text-5xl leading-tight font-extrabold md:text-6xl">把想法变成<br /><span class="text-accent">能用的产品</span></h1>
+    <p class="mb-6 text-lg tracking-[0.15em] text-slate-300">全栈开发 · 教育数字化 · AI 应用落地</p>
+    <p class="mb-10 text-slate-400">
+      做过教辅题库、AI 批改、桌面工具、浏览器插件、小程序后台……<br />
+      你说需求，我来实现，源码全交付。
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <button type="button" class={`${btnPrimary} wechat-btn`} data-wechat-id={personalInfo.social.wechat}>微信咨询</button>
+      <a href="#services" class={btnGhost}>看看我能做什么</a>
+    </div>
+  </section>
 
-    <!-- 技能区 -->
-    <section id="skills" class="skills-section">
-      <h2>技能</h2>
-      <div class="skills-container">
-        {personalInfo.skills.map((skill: string) => (
-          <span class="skill-tag" key={skill}>{skill}</span>
-        ))}
+  <!-- 我能帮你解决什么问题（文字列表，无卡片） -->
+  <section id="problems" class="bg-slate-50 py-20">
+    <div class="mx-auto max-w-[1200px] px-4">
+      <div class="mb-12 border-b-2 border-slate-200 pb-6">
+        <span class="text-sm font-bold tracking-widest text-accent">01</span>
+        <h2 class="mt-1 text-2xl font-bold md:text-3xl">我能帮你解决什么问题</h2>
       </div>
-    </section>
-
-    <!-- 项目区 -->
-    <section id="projects" class="projects-section">
-      <h2>项目</h2>
-      <div class="projects-grid">
-        {projects.map((project) => (
-          <div class="project-card" key={project.id}>
-            {project.data.image && (
-              <img 
-                src={project.data.image} 
-                alt={project.data.title} 
-                class="project-image"
-              />
-            )}
-            <h3>{project.data.title}</h3>
-            <p>{project.data.description}</p>
-            <div class="project-tech">
-              {project.data.tech.map((tech: string) => (
-                <span class="tech-tag" key={tech}>{tech}</span>
-              ))}
-            </div>
-            <div class="project-links">
-              {project.data.githubUrl && (
-                <a 
-                  href={project.data.githubUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  class="project-link"
-                >
-                  GitHub
-                </a>
-              )}
-              {project.data.demoUrl && (
-                <a 
-                  href={project.data.demoUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  class="project-link"
-                >
-                  Demo
-                </a>
-              )}
+      <div class="grid gap-x-12 gap-y-10 sm:grid-cols-2">
+        {problems.map((p, i) => (
+          <div class="flex gap-5">
+            <span class="text-xl font-extrabold text-accent">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 class="mb-1.5 text-lg font-semibold">{p.title}</h3>
+              <p class="text-[0.95rem] text-slate-500">{p.desc}</p>
             </div>
           </div>
         ))}
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 承接项目区 -->
-    <section id="hiring" class="hiring-section">
-      <div class="hiring-container">
-        <h2>承接项目</h2>
-        <p class="hiring-desc">我正在承接各类 Web 开发项目，包括但不限于：</p>
-        <ul class="hiring-list">
-          <li>前端开发（React, Vue, Astro）</li>
-          <li>全栈应用开发（Go, Python, Rust）</li>
-          <li>浏览器插件开发</li>
-          <li>AI 集成项目</li>
-          <li>桌面应用开发</li>
-          <li>服务器维护（Linux, Docker, K8s）</li>
-          <li>数据库维护</li>
-        </ul>
-        <p class="hiring-contact">如需咨询或报价，请通过以下方式联系我：</p>
-        <div class="contact-links">
-          {personalInfo.social.email && (
-            <a 
-              href={`mailto:${personalInfo.social.email}`} 
-              class="contact-link"
-            >
-              邮箱联系
-            </a>
-          )}
-          {personalInfo.social.x && (
-            <a 
-              href={personalInfo.social.x} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="contact-link"
-            >
-              X 联系
-            </a>
-          )}
-          {personalInfo.social.wechat && (
-            <button
-              type="button"
-              class="contact-link"
-              data-wechat-id={personalInfo.social.wechat}
-              id="wechat-contact-btn"
-            >
-              微信联系
-            </button>
-          )}
-        </div>
+  <!-- 服务与价格 -->
+  <section id="services" class="py-20">
+    <div class="mx-auto max-w-[1200px] px-4">
+      <div class="mb-12 border-b-2 border-slate-200 pb-6">
+        <span class="text-sm font-bold tracking-widest text-accent">02</span>
+        <h2 class="mt-1 text-2xl font-bold md:text-3xl">服务与参考价格</h2>
+        <p class="mt-3 max-w-2xl text-slate-500">以下为常见服务类目与参考价，具体价格按实际需求评估，需求越明确报价越准确。</p>
       </div>
-    </section>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((s) => (
+          <div class={`${cardCls} relative flex flex-col`}>
+            <span class="absolute top-5 right-5 rounded-full bg-accent px-3 py-1 text-sm font-bold text-dark">{s.price}</span>
+            <h3 class="mb-3 pr-24 text-xl font-semibold">{s.name}</h3>
+            <p class="mb-4 flex-1 text-[0.95rem] text-slate-500">{s.desc}</p>
+            <div class="flex flex-col gap-1.5 border-t border-dashed border-slate-200 pt-4 text-sm text-slate-500">
+              <span><em class={labelCls}>交付</em>{s.deliver}</span>
+              <span><em class={labelCls}>工期</em>{s.period}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 
-    <!-- 赞赏区 -->
-    {personalInfo.donation && (
-      <section id="donation" class="donation-section">
-        <h2>赞赏支持</h2>
-        {personalInfo.donation.description && (
-          <p class="donation-desc">{personalInfo.donation.description}</p>
-        )}
-        <div class="qrcode-container">
-          {personalInfo.donation.wechat && (
-            <div class="qrcode-item">
-              <h3>微信</h3>
-              <img 
-                src={personalInfo.donation.wechat} 
-                alt="微信赞赏码" 
-                class="qrcode-img" 
-              />
+  <!-- 案例精选（首个为主打案例） -->
+  <section id="cases" class="bg-slate-50 py-20">
+    <div class="mx-auto max-w-[1200px] px-4">
+      <div class="mb-12 border-b-2 border-slate-200 pb-6">
+        <span class="text-sm font-bold tracking-widest text-accent">03</span>
+        <h2 class="mt-1 text-2xl font-bold md:text-3xl">做过什么</h2>
+        <p class="mt-3 max-w-2xl text-slate-500">部分案例展示，更多项目见 <a href={personalInfo.social.github} target="_blank" rel="noopener noreferrer" class="font-semibold text-accent">GitHub</a>。</p>
+      </div>
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {cases.map((c) => (
+          c.featured ? (
+            <div class="rounded-[10px] bg-dark p-7 transition hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(15,23,42,0.25)] sm:col-span-2">
+              <span class="text-xs font-bold tracking-widest text-accent">主打案例</span>
+              <h3 class="mt-2 mb-4 text-xl font-semibold text-white">{c.title}</h3>
+              <p class="mb-3 text-sm text-slate-300"><em class={labelDarkCls}>问题</em>{c.problem}</p>
+              <p class="mb-3 text-sm text-slate-300"><em class={labelDarkCls}>结果</em>{c.result}</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                {c.tags.map((t) => <span class="rounded-full border border-slate-700 bg-white/5 px-2.5 py-0.5 text-xs text-slate-400">{t}</span>)}
+              </div>
             </div>
-          )}
-          {personalInfo.donation.alipay && (
-            <div class="qrcode-item">
-              <h3>支付宝</h3>
-              <img 
-                src={personalInfo.donation.alipay} 
-                alt="支付宝赞赏码" 
-                class="qrcode-img" 
-              />
+          ) : (
+            <div class={cardCls}>
+              <h3 class="mb-4 text-lg font-semibold">{c.title}</h3>
+              <p class="mb-3 text-sm text-slate-500"><em class={labelCls}>问题</em>{c.problem}</p>
+              <p class="mb-3 text-sm text-slate-500"><em class={labelCls}>结果</em>{c.result}</p>
+              <div class="mt-4 mb-2 flex flex-wrap gap-2">
+                {c.tags.map((t) => <span class="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs text-slate-500">{t}</span>)}
+              </div>
+              {c.link && (
+                <a href={c.link} target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-accent hover:underline">查看详情 →</a>
+              )}
             </div>
-          )}
-          {personalInfo.donation.paypal && (
-            <div class="qrcode-item">
-              <h3>PayPal</h3>
-              <a 
-                href={personalInfo.donation.paypal} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="paypal-link"
-              >
-                点击赞赏
-              </a>
-            </div>
-          )}
-        </div>
-      </section>
-    )}
-  </div>
+          )
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 为什么找我（竖线列表，无卡片） -->
+  <section id="why" class="py-20">
+    <div class="mx-auto max-w-[1200px] px-4">
+      <div class="mb-12 border-b-2 border-slate-200 pb-6">
+        <span class="text-sm font-bold tracking-widest text-accent">04</span>
+        <h2 class="mt-1 text-2xl font-bold md:text-3xl">为什么找我做</h2>
+      </div>
+      <div class="grid gap-x-12 gap-y-10 sm:grid-cols-2">
+        {whyMe.map((w) => (
+          <div class="border-l-2 border-accent pl-5">
+            <h3 class="mb-1.5 text-lg font-semibold">{w.title}</h3>
+            <p class="text-[0.95rem] text-slate-500">{w.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 合作流程 -->
+  <section id="process" class="bg-slate-50 py-20">
+    <div class="mx-auto max-w-[1200px] px-4">
+      <div class="mb-12 border-b-2 border-slate-200 pb-6">
+        <span class="text-sm font-bold tracking-widest text-accent">05</span>
+        <h2 class="mt-1 text-2xl font-bold md:text-3xl">合作流程</h2>
+      </div>
+      <div class="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {steps.map((s, i) => (
+          <div class="step-connector relative px-4 py-6 text-center">
+            <span class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-full bg-dark text-lg font-bold text-accent">{i + 1}</span>
+            <h3 class="mb-2 text-lg font-semibold">{s.title}</h3>
+            <p class="text-sm text-slate-500">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系方式（深色收尾，呼应 Hero） -->
+  <section id="contact" class="contact-glow px-4 py-20 text-center text-slate-100">
+    <h2 class="mb-3 text-3xl font-bold">聊聊你的需求</h2>
+    <p class="mb-8 text-slate-400">需求描述越具体，评估和报价越快。沟通免费，欢迎来聊。</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <button type="button" class={`${btnPrimary} wechat-btn`} data-wechat-id={personalInfo.social.wechat}>微信咨询</button>
+      <a href={`mailto:${personalInfo.social.email}`} class={btnGhost}>邮箱联系</a>
+    </div>
+  </section>
+
+  <!-- 悬浮微信按钮 -->
+  <button
+    type="button"
+    class="wechat-btn fixed right-6 bottom-6 z-50 cursor-pointer rounded-full border-none bg-[#07C160] px-6 py-3.5 font-semibold text-white shadow-[0_4px_16px_rgba(7,193,96,0.4)] transition hover:scale-105"
+    data-wechat-id={personalInfo.social.wechat}
+    aria-label="微信咨询"
+  >
+    微信
+  </button>
 </MinimalLayout>
-
-<style>
-  .about-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding-top: 3rem;
-  }
-  
-  .profile-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  .profile-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--color-border);
-  }
-  
-  .profile-text h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .profile-text h2 {
-    color: var(--color-accent);
-    margin-bottom: 1rem;
-    font-weight: normal;
-  }
-  
-  .social-links {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .social-link {
-    color: var(--color-accent);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--color-accent);
-    border-radius: var(--border-radius);
-    transition: all 0.3s ease;
-  }
-  
-  .social-link:hover {
-    background-color: var(--color-accent);
-    color: white;
-  }
-  
-  .skills-section {
-    text-align: center;
-  }
-  
-  .skills-section h2 {
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-  
-  .skills-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-  }
-  
-  .skill-tag {
-    background-color: #f1f3f9;
-    color: var(--color-accent);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-  }
-  
-  .projects-section {
-    padding-bottom: 2rem;
-  }
-  
-  .projects-section h2 {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-  
-  .project-card {
-    background: white;
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-  }
-  
-  .project-image {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-radius: var(--border-radius);
-    margin-bottom: 1rem;
-  }
-  
-  .project-card h3 {
-    margin-top: 0;
-    color: var(--color-accent);
-  }
-  
-  .project-tech {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 1rem 0;
-  }
-  
-  .tech-tag {
-    background-color: #f8f9fa;
-    color: #495057;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-  }
-  
-  .project-links {
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .project-link {
-    color: var(--color-accent);
-    text-decoration: none;
-    font-size: 0.9rem;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.3s ease;
-  }
-  
-  .project-link:hover {
-    border-bottom-color: var(--color-accent);
-  }
-  
-  .donation-section {
-    text-align: center;
-    padding: var(--spacing-xl) 0;
-    border-top: 1px solid var(--color-border);
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .hiring-section {
-    text-align: center;
-    padding: var(--spacing-xl) 0;
-    border-top: 1px solid var(--color-border);
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .hiring-container {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  .hiring-desc {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-  }
-  
-  .hiring-list {
-    text-align: left;
-    max-width: 400px;
-    margin: 0 auto 1.5rem;
-    padding-left: 1.5rem;
-  }
-  
-  .hiring-list li {
-    margin-bottom: 0.5rem;
-    line-height: 1.5;
-  }
-  
-  .hiring-contact {
-    margin-bottom: 1.5rem;
-  }
-  
-  .contact-links {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-  
-  .contact-link {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background-color: var(--color-accent);
-    color: white;
-    text-decoration: none;
-    border-radius: var(--border-radius);
-    transition: background-color 0.3s ease;
-  }
-  
-  .contact-link:hover {
-    background-color: #3a5a80;
-  }
-  
-  .donation-section h2 {
-    margin-bottom: 1rem;
-  }
-  
-  .donation-desc {
-    max-width: 600px;
-    margin: 0 auto 2rem;
-    color: #6c757d;
-  }
-  
-  .qrcode-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    justify-content: center;
-    align-items: flex-start;
-  }
-  
-  .qrcode-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 200px;
-  }
-  
-  .qrcode-img {
-    max-width: 180px;
-    max-height: 180px;
-    width: auto;
-    height: auto;
-    border: 1px solid #e9ecef;
-    border-radius: var(--border-radius);
-  }
-  
-  .qrcode-item h3 {
-    margin-bottom: 1rem;
-    color: var(--color-accent);
-  }
-  
-  .paypal-link {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background-color: var(--color-accent);
-    color: white;
-    text-decoration: none;
-    border-radius: var(--border-radius);
-    margin-top: 1rem;
-  }
-  
-  .paypal-link:hover {
-    background-color: #3a5a80;
-  }
-  
-  @media (max-width: 768px) {
-    .about-section {
-      padding-top: 2rem;
-    }
-    
-    .profile-text h1 {
-      font-size: 2rem;
-    }
-    
-    .projects-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .qrcode-container {
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .qrcode-item {
-      margin-bottom: 2rem;
-    }
-    
-    section {
-      padding: var(--spacing-lg) 0;
-    }
-  }
-</style>
 
 <script>
   function showWechatId(wechatId) {
-    // 创建模态框元素
     const modal = document.createElement('div');
     modal.id = 'wechat-modal';
-    
-    // 设置模态框样式
+
     modal.style.position = 'fixed';
     modal.style.top = '0';
     modal.style.left = '0';
     modal.style.width = '100%';
     modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    modal.style.backgroundColor = 'rgba(15, 23, 42, 0.8)';
     modal.style.display = 'flex';
     modal.style.justifyContent = 'center';
     modal.style.alignItems = 'center';
     modal.style.zIndex = '10000';
-    
-    // 创建内容区域
+
     const content = document.createElement('div');
     content.style.background = 'white';
     content.style.padding = '2rem';
-    content.style.borderRadius = '8px';
+    content.style.borderRadius = '12px';
     content.style.textAlign = 'center';
     content.style.maxWidth = '90%';
     content.style.position = 'relative';
-    
-    // 创建关闭按钮
+
     const closeBtn = document.createElement('button');
     closeBtn.textContent = '×';
     closeBtn.style.position = 'absolute';
-    closeBtn.style.top = '1rem';
+    closeBtn.style.top = '0.75rem';
     closeBtn.style.right = '1rem';
     closeBtn.style.background = 'none';
     closeBtn.style.border = 'none';
     closeBtn.style.fontSize = '1.5rem';
     closeBtn.style.cursor = 'pointer';
-    closeBtn.style.color = '#666';
-    
-    // 创建标题和内容
+    closeBtn.style.color = '#64748B';
+
     const title = document.createElement('h3');
-    title.textContent = '微信账号';
+    title.textContent = '微信咨询';
     title.style.marginBottom = '1rem';
-    
+
+    const qrcode = document.createElement('img');
+    qrcode.src = '/images/wechat-qrcode.jpg';
+    qrcode.alt = '微信二维码';
+    qrcode.style.width = '200px';
+    qrcode.style.height = '200px';
+    qrcode.style.objectFit = 'contain';
+    qrcode.style.border = '1px solid #E2E8F0';
+    qrcode.style.borderRadius = '8px';
+    qrcode.style.marginBottom = '1rem';
+
     const wechatDisplay = document.createElement('p');
     wechatDisplay.textContent = wechatId;
     wechatDisplay.style.fontSize = '1.2rem';
     wechatDisplay.style.fontWeight = 'bold';
-    wechatDisplay.style.margin = '1rem 0';
-    
+    wechatDisplay.style.margin = '0.5rem 0';
+
     const instruction = document.createElement('p');
-    instruction.textContent = '请复制上方微信账号并添加好友';
-    
-    // 组装内容
+    instruction.textContent = '扫码或复制微信号添加好友，备注你的需求';
+    instruction.style.color = '#64748B';
+
     closeBtn.addEventListener('click', closeWechatModal);
     content.appendChild(closeBtn);
     content.appendChild(title);
+    content.appendChild(qrcode);
     content.appendChild(wechatDisplay);
     content.appendChild(instruction);
-    
-    // 组装模态框
+
     modal.appendChild(content);
     document.body.appendChild(modal);
-    
-    // 点击模态框背景关闭
-    modal.addEventListener('click', function(e) {
+
+    modal.addEventListener('click', function (e) {
       if (e.target === modal) {
         closeWechatModal();
       }
     });
   }
-  
+
   function closeWechatModal() {
     const modal = document.getElementById('wechat-modal');
     if (modal) {
       document.body.removeChild(modal);
     }
   }
-  
-  // ESC键关闭模态框
-  document.addEventListener('keydown', function(e) {
+
+  document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      const modal = document.getElementById('wechat-modal');
-      if (modal) {
-        closeWechatModal();
-      }
+      closeWechatModal();
     }
   });
-  
-  // 为微信按钮添加点击事件
-  document.addEventListener('DOMContentLoaded', function() {
-    const wechatSocialBtn = document.getElementById('wechat-social-btn');
-    const wechatContactBtn = document.getElementById('wechat-contact-btn');
-    
-    if (wechatSocialBtn) {
-      wechatSocialBtn.addEventListener('click', function() {
-        const wechatId = this.getAttribute('data-wechat-id');
-        showWechatId(wechatId);
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.wechat-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        showWechatId(this.getAttribute('data-wechat-id'));
       });
-    }
-    
-    if (wechatContactBtn) {
-      wechatContactBtn.addEventListener('click', function() {
-        const wechatId = this.getAttribute('data-wechat-id');
-        showWechatId(wechatId);
-      });
-    }
+    });
   });
 </script>
