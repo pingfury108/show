@@ -1,0 +1,172 @@
+---
+// src/pages/tb.astro - 淘宝详情页风格落地页（用于截图上架）
+import MinimalLayout from '../layouts/MinimalLayout.astro';
+
+// 能做什么
+const problems = [
+  { title: '纸质资料变电子题库', desc: '试卷教辅 OCR 识别 + AI 结构化，扫描件变成可检索题库' },
+  { title: 'AI 批改 / 答疑应用', desc: '作业批改、错别字检查、自动解题，从模型接入到上线' },
+  { title: '重复工作自动化', desc: '数据抓取、批量处理、定时监控、消息推送' },
+  { title: '桌面工具 / 浏览器插件', desc: 'Windows / macOS 跨平台软件，Chrome / Edge 扩展' },
+  { title: '网站 / 小程序 / 管理系统', desc: '企业官网、后台管理、小程序 API，一站式交付' },
+  { title: '软件授权 + 付费接入', desc: '授权码生成验证、支付接入，软件商业化整套方案' },
+];
+
+// 服务报价
+const services = [
+  { name: 'AI 应用开发', price: '¥3,000 起', period: '1-3 周' },
+  { name: '教辅资料数字化', price: '¥2,000 起', period: '按量报价' },
+  { name: '桌面应用开发', price: '¥1,500 起', period: '1-2 周' },
+  { name: '浏览器插件开发', price: '¥800 起', period: '3-7 天' },
+  { name: '网站 / 小程序开发', price: '¥3,000 起', period: '2-4 周' },
+  { name: '自动化脚本 / 机器人', price: '¥500 起', period: '1-3 天' },
+];
+
+// 案例
+const cases = [
+  { title: '教辅数字化题库系统', desc: '数千页纸质试卷 → OCR 识别 + AI 结构化 + 题目管理后台', tags: ['OCR', 'AI', '题库'] },
+  { title: 'AI 做题助手浏览器插件', desc: '一键生成解题步骤与解析，支持图片题识别、公式渲染', tags: ['插件', 'AI'] },
+  { title: '手写作业 AI 批改工具', desc: '手写 OCR + 涂改识别 + 错别字/病句/标点自动批改', tags: ['AI 批改', 'OCR'] },
+  { title: 'AI 对话学习平台', desc: '上传资料自动生成对话讲解、测验题和播客音频', tags: ['AI', 'TTS'] },
+  { title: '印刷物融媒体平台', desc: '书籍杂志配音视频，章节管理 + 二维码批量导出', tags: ['融媒体', '出版'] },
+  { title: '电子书转有声书工具', desc: 'EPUB / PDF 按章节合成语音，导出 MP3 / M4B', tags: ['TTS', '批量'] },
+];
+
+// 优势
+const whyMe = [
+  { title: '教育行业经验丰富', desc: '深耕教辅数字化多年，OCR、题库、AI 批改全流程都做过' },
+  { title: '一个人全流程交付', desc: '需求、开发、部署、维护一手包办，沟通零损耗' },
+  { title: '交付即用 运维省钱', desc: '单文件交付 + 轻量数据库，普通云主机即可运行' },
+  { title: '源码全部交付', desc: '项目结束源码文档全给你，无技术绑定' },
+];
+
+// 流程
+const steps = [
+  { title: '旺旺沟通需求', desc: '描述需求，免费评估' },
+  { title: '确认报价工期', desc: '明确范围，拍下定金' },
+  { title: '开发定期同步', desc: '过程透明，按期交付' },
+  { title: '验收付尾款', desc: '满意确认，源码交付' },
+];
+---
+
+<MinimalLayout
+  title="软件定制开发 - 全栈工程师一对一服务"
+  description="网站、小程序、桌面软件、浏览器插件、AI 应用定制开发，源码全交付"
+>
+  <div class="mx-auto max-w-[750px] bg-white shadow-2xl">
+
+    <!-- 切片 1：首屏 -->
+    <section class="hero-glow px-8 py-20 text-center text-slate-100">
+      <p class="mb-6 inline-block rounded-full border border-accent/50 px-5 py-1.5 text-sm tracking-widest text-accent">全栈工程师 · 一对一服务</p>
+      <h1 class="mb-4 text-5xl leading-tight font-extrabold">软件定制开发</h1>
+      <p class="mb-3 text-xl tracking-[0.2em] text-accent">网站 · 小程序 · 桌面软件 · 浏览器插件 · AI 应用</p>
+      <p class="text-slate-400">你说需求，我来实现 —— 源码全交付，满意再付尾款</p>
+    </section>
+
+    <!-- 切片 2：能做什么 -->
+    <section class="px-8 py-16">
+      <h2 class="mb-2 text-center text-3xl font-bold">我能帮你做什么</h2>
+      <p class="mb-10 text-center text-slate-400">以下需求，都可以直接旺旺咨询</p>
+      <div class="grid grid-cols-2 gap-5">
+        {problems.map((p, i) => (
+          <div class="rounded-xl bg-slate-50 p-6">
+            <span class="text-2xl font-extrabold text-accent">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="mt-2 mb-1.5 text-lg font-bold">{p.title}</h3>
+            <p class="text-sm text-slate-500">{p.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 切片 3：透明报价 -->
+    <section class="bg-dark px-8 py-16 text-slate-100">
+      <h2 class="mb-2 text-center text-3xl font-bold">透明报价 <span class="text-accent">拒绝套路</span></h2>
+      <p class="mb-10 text-center text-slate-400">参考价格公开，具体按需求评估，需求越明确报价越准</p>
+      <div class="overflow-hidden rounded-xl border border-slate-700">
+        {services.map((s, i) => (
+          <div class={`flex items-center justify-between px-6 py-4 ${i % 2 === 0 ? 'bg-white/5' : ''}`}>
+            <div>
+              <p class="font-bold">{s.name}</p>
+              <p class="text-xs text-slate-400">工期 {s.period}</p>
+            </div>
+            <span class="text-lg font-extrabold text-accent">{s.price}</span>
+          </div>
+        ))}
+      </div>
+      <p class="mt-6 text-center text-sm text-slate-400">拍下定金 → 旺旺详聊 → 确认方案后开工</p>
+    </section>
+
+    <!-- 切片 4：案例 -->
+    <section class="px-8 py-16">
+      <h2 class="mb-2 text-center text-3xl font-bold">真实案例</h2>
+      <p class="mb-10 text-center text-slate-400">均为已上线运行的项目，可旺旺索取演示</p>
+      <div class="flex flex-col gap-5">
+        {cases.map((c) => (
+          <div class="rounded-xl border border-slate-200 p-6">
+            <h3 class="mb-1.5 text-lg font-bold">{c.title}</h3>
+            <p class="mb-3 text-sm text-slate-500">{c.desc}</p>
+            <div class="flex flex-wrap gap-2">
+              {c.tags.map((t) => <span class="rounded-full bg-slate-50 px-2.5 py-0.5 text-xs text-slate-500">{t}</span>)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 切片 5：为什么选我 -->
+    <section class="bg-slate-50 px-8 py-16">
+      <h2 class="mb-10 text-center text-3xl font-bold">为什么找我做</h2>
+      <div class="grid grid-cols-2 gap-8">
+        {whyMe.map((w) => (
+          <div class="border-l-2 border-accent pl-4">
+            <h3 class="mb-1.5 font-bold">{w.title}</h3>
+            <p class="text-sm text-slate-500">{w.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 切片 6：合作流程 -->
+    <section class="px-8 py-16">
+      <h2 class="mb-10 text-center text-3xl font-bold">合作流程</h2>
+      <div class="flex flex-col gap-6">
+        {steps.map((s, i) => (
+          <div class="flex items-center gap-5">
+            <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-dark text-lg font-bold text-accent">{i + 1}</span>
+            <div>
+              <h3 class="font-bold">{s.title}</h3>
+              <p class="text-sm text-slate-500">{s.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- 切片 7：承诺 -->
+    <section class="bg-slate-50 px-8 py-16 text-center">
+      <h2 class="mb-8 text-3xl font-bold">服务承诺</h2>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl bg-white p-5 shadow-sm">
+          <p class="mb-1 text-2xl font-extrabold text-accent">100%</p>
+          <p class="text-sm font-bold">源码交付</p>
+        </div>
+        <div class="rounded-xl bg-white p-5 shadow-sm">
+          <p class="mb-1 text-2xl font-extrabold text-accent">质保期</p>
+          <p class="text-sm font-bold">免费修复</p>
+        </div>
+        <div class="rounded-xl bg-white p-5 shadow-sm">
+          <p class="mb-1 text-2xl font-extrabold text-accent">验收后</p>
+          <p class="text-sm font-bold">再付尾款</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 切片 8：底部 CTA -->
+    <section class="contact-glow px-8 py-20 text-center text-slate-100">
+      <h2 class="mb-3 text-3xl font-bold">有需求？聊聊不要钱</h2>
+      <p class="mb-8 text-slate-400">点击右下角 <span class="font-bold text-accent">旺旺联系客服</span>，描述你的需求<br />免费评估，当天响应</p>
+      <p class="text-sm text-slate-500">个人开发者直营 · 无中间商赚差价</p>
+    </section>
+
+  </div>
+</MinimalLayout>
