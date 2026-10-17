@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /tb
+
+Sitemap: https://me.pingfury.top/sitemap-index.xml
